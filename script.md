@@ -2,7 +2,6 @@ docker network create kong-net
 
 docker run -d --name kong-database \
 --network=kong-net \
--p 5432:5432 \
 -e "POSTGRES_USER=kong" \
 -e "POSTGRES_DB=kong" \
 -e "POSTGRES_PASSWORD=kongpass" \
@@ -38,6 +37,54 @@ docker run -d --name kong-gateway \
 -p 8004:8004 \
 kong/kong-gateway:3.9.0.0
 
-docker kill kong-dbless
-docker container rm kong-dbless
+docker kill kong-database
+docker container rm kong-database
 docker network rm kong-net
+
+# Register Product Service
+
+curl -i -X POST http://localhost:8001/services/ \
+ --data "name=product-service" \
+ --data "url=http://product-service:7002"
+
+# Register Order Service
+
+curl -i -X POST http://localhost:8001/services/ \
+ --data "name=order-service" \
+ --data "url=http://order-service:7005"
+
+# Register Cart Service
+
+curl -i -X POST http://localhost:8001/services/ \
+ --data "name=cart-service" \
+ --data "url=http://cart-service:7003"
+
+# Register User Service
+
+curl -i -X POST http://localhost:8001/services/ \
+ --data "name=user-service" \
+ --data "url=http://user-service:7001"
+
+# Route for Product Service
+
+curl -i -X POST http://localhost:8001/routes/ \
+ --data "paths[]=/product-service" \
+ --data "service.name=product-service"
+
+# Route for Order Service
+
+curl -i -X POST http://localhost:8001/routes/ \
+ --data "paths[]=/order-service" \
+ --data "service.name=order-service"
+
+# Route for Cart Service
+
+curl -i -X POST http://localhost:8001/routes/ \
+ --data "paths[]=/cart-service" \
+ --data "service.name=cart-service"
+
+# Route for User Service
+
+curl -i -X POST http://localhost:8001/routes/ \
+ --data "paths[]=/user-service" \
+ --data "service.name=user-service"
