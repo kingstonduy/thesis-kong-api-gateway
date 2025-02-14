@@ -25,7 +25,7 @@ docker run -d --name kong-gateway \
 -e "KONG_PROXY_ERROR_LOG=/dev/stderr" \
 -e "KONG_ADMIN_ERROR_LOG=/dev/stderr" \
 -e "KONG_ADMIN_LISTEN=0.0.0.0:8001" \
--e "KONG_ADMIN_GUI_URL=http://localhost:8002" \
+-e "KONG_ADMIN_GUI_URL=http://34.124.235.0:8002" \
 -e KONG_LICENSE_DATA \
 -p 8000:8000 \
 -p 8443:8443 \
